@@ -1,0 +1,130 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python -m src.prepare
+    deps:
+    - path: data/raw/wine.csv
+      hash: md5
+      md5: 1245a012bdb9ecc0f9d1e82c15249729
+      size: 57341
+    - path: src/prepare.py
+      hash: md5
+      md5: 44e63b3d6cc83504450b8a799f50dc6f
+      size: 2582
+    - path: src/utils.py
+      hash: md5
+      md5: 551771b57155f4264be61129d87d775e
+      size: 1099
+    params:
+      params.yaml:
+        data:
+          raw: data/raw/wine.csv
+          target: quality
+          test_size: 0.2
+          split: ordered
+        train.seed: 42
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: ccfeec525ace63632c7a51b0b56d8158
+      size: 10043
+    - path: data/processed/train.csv
+      hash: md5
+      md5: f513e1faedb2f111582db75d3fdef266
+      size: 38907
+  featurize:
+    cmd: python -m src.featurize
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: ccfeec525ace63632c7a51b0b56d8158
+      size: 10043
+    - path: data/processed/train.csv
+      hash: md5
+      md5: f513e1faedb2f111582db75d3fdef266
+      size: 38907
+    - path: src/featurize.py
+      hash: md5
+      md5: 98f66c70352281f6d182f6ef813654c0
+      size: 1655
+    - path: src/utils.py
+      hash: md5
+      md5: 551771b57155f4264be61129d87d775e
+      size: 1099
+    params:
+      params.yaml:
+        data.target: quality
+        featurize:
+          extra_features: true
+    outs:
+    - path: data/features/test.csv
+      hash: md5
+      md5: 8c687e71bd1e6f9707db67f3f73b321a
+      size: 14139
+    - path: data/features/train.csv
+      hash: md5
+      md5: ddbc8622d1f45ab1fbb7b3a08e466d44
+      size: 55829
+  train:
+    cmd: python -m src.train
+    deps:
+    - path: data/features/train.csv
+      hash: md5
+      md5: ddbc8622d1f45ab1fbb7b3a08e466d44
+      size: 55829
+    - path: src/train.py
+      hash: md5
+      md5: 46b178fbd556cfe58d2553a9044a262d
+      size: 1593
+    - path: src/utils.py
+      hash: md5
+      md5: 551771b57155f4264be61129d87d775e
+      size: 1099
+    params:
+      params.yaml:
+        data.target: quality
+        train:
+          model: ridge
+          alpha: 1.0
+          n_estimators: 300
+          max_depth: 12
+          min_samples_leaf: 2
+          seed: 42
+    outs:
+    - path: models/model.joblib
+      hash: md5
+      md5: 13df5719380e459683c4e171bb058bae
+      size: 2058
+  evaluate:
+    cmd: python -m src.evaluate
+    deps:
+    - path: data/features/test.csv
+      hash: md5
+      md5: 8c687e71bd1e6f9707db67f3f73b321a
+      size: 14139
+    - path: models/model.joblib
+      hash: md5
+      md5: 13df5719380e459683c4e171bb058bae
+      size: 2058
+    - path: src/evaluate.py
+      hash: md5
+      md5: 65bf53ed95ae336838ba14a1e94602ce
+      size: 1549
+    - path: src/utils.py
+      hash: md5
+      md5: 551771b57155f4264be61129d87d775e
+      size: 1099
+    params:
+      params.yaml:
+        data.target: quality
+        evaluate:
+          min_r2: 0.25
+    outs:
+    - path: reports/metrics.json
+      hash: md5
+      md5: afc24c81be1718b4474b5451cf10654b
+      size: 71
+    - path: reports/plots/pred_vs_true.csv
+      hash: md5
+      md5: df99c840a2354062133fca2abdc221ca
+      size: 1533
