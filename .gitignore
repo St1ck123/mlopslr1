@@ -1,0 +1,13 @@
+# окружение
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# полный исходный файл: вне Git и вне DVC, его скачивает src.ingest
+data/external/
+
+# ключи DVC
+.dvc/config.local

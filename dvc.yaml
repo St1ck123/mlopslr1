@@ -1,0 +1,58 @@
+stages:
+  prepare:
+    cmd: python -m src.prepare
+    deps:
+      - src/prepare.py
+      - src/utils.py
+      - data/raw/wine.csv
+    params:
+      - data
+      - train.seed
+    outs:
+      - data/processed/train.csv
+      - data/processed/test.csv
+
+  featurize:
+    cmd: python -m src.featurize
+    deps:
+      - src/featurize.py
+      - src/utils.py
+      - data/processed/train.csv
+      - data/processed/test.csv
+    params:
+      - data.target
+      - featurize
+    outs:
+      - data/features/train.csv
+      - data/features/test.csv
+
+  train:
+    cmd: python -m src.train
+    deps:
+      - src/train.py
+      - src/utils.py
+      - data/features/train.csv
+    params:
+      - data.target
+      - train
+    outs:
+      - models/model.joblib
+
+  evaluate:
+    cmd: python -m src.evaluate
+    deps:
+      - src/evaluate.py
+      - src/utils.py
+      - models/model.joblib
+      - data/features/test.csv
+    params:
+      - data.target
+      - evaluate
+    metrics:
+      - reports/metrics.json:
+          cache: false
+    plots:
+      - reports/plots/pred_vs_true.csv:
+          x: y_true
+          y: y_pred
+          cache: false

@@ -1,0 +1,25 @@
+# Все параметры пайплайна. Менять только здесь, в коде чисел быть не должно.
+ingest:
+  url: https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv
+  source: data/external/winequality-red.csv
+  n_rows: 1000              # версия v1: первые 1000 вин; v2 — весь набор (--all)
+
+data:
+  raw: data/raw/wine.csv
+  target: quality
+  test_size: 0.2
+  split: ordered            # ordered — хвост файла в тест; random — случайно
+
+featurize:
+  extra_features: true      # добавить доли диоксида серы и суммарную кислотность
+
+train:
+  model: ridge              # ridge | random_forest
+  alpha: 1.0                # только для ridge
+  n_estimators: 300         # только для random_forest
+  max_depth: 12
+  min_samples_leaf: 2
+  seed: 42
+
+evaluate:
+  min_r2: 0.25              # порог допуска модели
