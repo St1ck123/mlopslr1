@@ -14,12 +14,18 @@ featurize:
   extra_features: true      # добавить доли диоксида серы и суммарную кислотность
 
 train:
-  model: ridge              # ridge | random_forest
-  alpha: 1.0                # только для ridge
-  n_estimators: 300         # только для random_forest
-  max_depth: 12
+  model: gradient_boosting  # лучшая конфигурация ЛР2
+  alpha: 1.0
+  n_estimators: 200
+  max_depth: 2
   min_samples_leaf: 2
+  learning_rate: 0.05
   seed: 42
 
 evaluate:
   min_r2: 0.25              # порог допуска модели
+
+mlflow:
+  experiment: wine-quality-lr2
+  model_name: wine-quality-regressor
+  primary_metric: r2
