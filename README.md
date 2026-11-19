@@ -155,3 +155,35 @@ pre-commit run --all-files
 
 Токены в репозиторий не попадают: в Colab они читаются из «Секретов»
 (`userdata.get`), ключи DVC пишутся только в `.dvc/config.local`.
+
+## ЛР2. Эксперименты и реестр моделей
+
+Проект продолжает Wine Quality (вариант 2). Эксперимент MLflow: `wine-quality-lr2`; модель: `wine-quality-regressor`.
+
+Сервер: https://dagshub.com/St1ck123/mlopslr1.mlflow
+
+В Colab задайте секрет `DAGSHUB_TOKEN`; не помещайте его в Git. Для трекинга нужны переменные `MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD`.
+
+```bash
+dvc pull
+python -m src.experiments
+python -m src.registry register
+python -m src.registry promote
+python -m src.registry status
+python -m src.registry predict
+```
+
+Шесть запусков сравнивались на неизменном тесте; `train` и `evaluate` пишут данные в один MLflow run.
+
+| № | Модель | R² | MAE | RMSE | Время, с |
+|---|---|---:|---:|---:|---:|
+| 1 | Ridge (alpha=1) | 0.2672 | 0.5279 | 0.6959 | 0.0204 |
+| 2 | Ridge (alpha=10) | 0.2671 | 0.5277 | 0.6960 | 0.0050 |
+| 3 | Random Forest (200/12/2) | 0.2901 | 0.5187 | 0.6849 | 1.2082 |
+| 4 | Random Forest (300/16/1) | 0.2923 | 0.5180 | 0.6839 | 2.0972 |
+| 5 | Gradient Boosting (200/2/2, lr=.05) | **0.3070** | **0.5139** | **0.6768** | 0.5395 |
+| 6 | Gradient Boosting (350/3/2, lr=.05) | 0.2959 | 0.5264 | 0.6821 | 1.3063 |
+
+Лучший запуск №5; его параметры сохранены в `params.yaml`. `champion` назначается только при улучшении R², а `challenger` остаётся кандидатом. Фактические номера версий следует читать через `python -m src.registry status`; они не содержатся в присланном ноутбуке.
+
+Убедитесь, что `dvc repro -f` выполнен на лучших параметрах перед обновлением `dvc.lock`. Значения таблицы получены из выполненного Colab, а не из локального запуска GitHub-ветки.
