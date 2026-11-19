@@ -11,3 +11,12 @@ data/external/
 
 # ключи DVC
 .dvc/config.local
+
+# временные результаты MLOps
+.lr2_backup/
+reports/run_id.txt
+reports/model_uri.txt
+reports/train_info.json
+reports/registry_status.json
+reports/registry_predictions.csv
+results/
