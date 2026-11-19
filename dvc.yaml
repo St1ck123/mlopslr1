@@ -31,10 +31,12 @@ stages:
     deps:
       - src/train.py
       - src/utils.py
+      - src/tracking.py
       - data/features/train.csv
     params:
       - data.target
       - train
+      - mlflow
     outs:
       - models/model.joblib
 
@@ -43,11 +45,13 @@ stages:
     deps:
       - src/evaluate.py
       - src/utils.py
+      - src/tracking.py
       - models/model.joblib
       - data/features/test.csv
     params:
       - data.target
       - evaluate
+      - mlflow
     metrics:
       - reports/metrics.json:
           cache: false
