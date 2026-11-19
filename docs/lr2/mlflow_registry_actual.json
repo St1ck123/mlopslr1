@@ -1,0 +1,14 @@
+{
+  "champion": {
+    "version": "1",
+    "run_id": "27ad4d2c0d5c4d16bae1b9294e344e7c",
+    "r2": 0.307016,
+    "source": "models:/m-e23ce8671323401a88c4735d40604a13"
+  },
+  "challenger": {
+    "version": "2",
+    "run_id": "17f897efe1984f3386688ad911c95987",
+    "r2": 0.267082,
+    "source": "models:/m-70ebe0a539f348c0a15048c2458eeeb5"
+  }
+}

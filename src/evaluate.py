@@ -13,6 +13,7 @@ import pandas as pd
 from sklearn.metrics import mean_absolute_error, r2_score, root_mean_squared_error
 
 from src.utils import ensure_parent, get_logger, load_params
+from src import tracking
 
 log = get_logger("evaluate")
 
@@ -39,6 +40,7 @@ def main() -> None:
         ensure_parent("reports/plots/pred_vs_true.csv"), index=False
     )
 
+    tracking.log_evaluation(metrics)
     log.info("метрики: %s", metrics)
     if metrics["r2"] < min_r2:
         log.error("R2 = %.4f ниже порога %.2f", metrics["r2"], min_r2)
