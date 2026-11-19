@@ -9,6 +9,8 @@ dependencies = [
     "pyyaml>=6.0",
     "joblib>=1.4",
     "dvc[s3]>=3.55",
+    "mlflow>=2.20",
+    "cloudpickle>=3.0",
 ]
 
 [dependency-groups]
